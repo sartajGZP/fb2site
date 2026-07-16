@@ -22,4 +22,4 @@ def write_post(post: Post, output_dir: Path) -> None:
             f.write(post.body + "\n\n")
 
         for link in post.links:
-            f.write(f"{link}\n")
+            f.write(f"<{link}>\n")

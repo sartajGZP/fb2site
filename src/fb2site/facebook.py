@@ -5,28 +5,44 @@ import pprint
 
 from .models import Post
 
-def extract_body(raw: dict) -> str:
-    """Extract the text body of a Facebook post."""
+def fix_mojibake(text: str) -> str:
+    if "à" not in text:
+        return text
 
+    try:
+        return text.encode("latin1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
+
+def extract_body(raw: dict) -> str:
+    """Extract the main text body of a Facebook post."""
+
+    # First, look in the post's data.
     for item in raw.get("data", []):
-        post = item.get("post")
-        if post:
-            return post
+        text = item.get("post")
+        if text:
+            return text
+
+    # Then, look inside attachments.
+    for attachment in raw.get("attachments", []):
+        for item in attachment.get("data", []):
+            text = item.get("post")
+            if text:
+                return text
 
     return ""
-
 
 def parse_post(raw: dict) -> Post:
     """Convert a raw Facebook JSON object into a Post."""
 
     timestamp = datetime.fromtimestamp(raw.get("timestamp", 0))
-    title = raw.get("title", "")
+    title = fix_mojibake(raw.get("title", ""))
 
     return Post(
         id=None,
         timestamp=timestamp,
         title=title,
-        body=extract_body(raw),
+        body = fix_mojibake(extract_body(raw)),
         links=extract_links(raw),
     )
 
@@ -44,8 +60,15 @@ def parse_posts(export_dir: Path) -> list[Post]:
     posts = []
 
     for raw in raw_posts:
-        posts.append(parse_post(raw))
+        post = parse_post(raw)
 
+        if "shared a post" in post.title and post.body:
+            print("=" * 60)
+            print(post.title)
+            print(post.body[:100])
+            print("=" * 60)
+
+        posts.append(post)
     return posts
 
 
