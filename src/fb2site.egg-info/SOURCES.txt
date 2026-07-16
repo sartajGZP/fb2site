@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/fb2site/__init__.py
+src/fb2site/__main__.py
+src/fb2site/cli.py
+src/fb2site/inspector.py
+src/fb2site.egg-info/PKG-INFO
+src/fb2site.egg-info/SOURCES.txt
+src/fb2site.egg-info/dependency_links.txt
+src/fb2site.egg-info/entry_points.txt
+src/fb2site.egg-info/top_level.txt

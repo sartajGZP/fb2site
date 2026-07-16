@@ -1,0 +1,9 @@
+[project]
+name = "fb2site"
+version = "0.1.0"
+description = "Convert Facebook JSON exports into static websites."
+readme = "README.md"
+requires-python = ">=3.11"
+
+[project.scripts]
+fb2site = "fb2site.cli:main"
