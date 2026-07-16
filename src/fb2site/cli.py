@@ -1,8 +1,9 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
-from .inspector import inspect_export
+from .convert import convert_export
 from .facebook import parse_posts
+from .inspector import inspect_export
 
 
 def main():
@@ -13,6 +14,7 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    # inspect command
     inspect_parser = subparsers.add_parser(
         "inspect",
         help="Inspect a Facebook export.",
@@ -21,6 +23,22 @@ def main():
     inspect_parser.add_argument(
         "path",
         help="Path to the Facebook export directory.",
+    )
+
+    # convert command
+    convert_parser = subparsers.add_parser(
+        "convert",
+        help="Convert a Facebook export into Markdown.",
+    )
+
+    convert_parser.add_argument(
+        "input",
+        help="Path to the Facebook export directory.",
+    )
+
+    convert_parser.add_argument(
+        "output",
+        help="Directory where Markdown files will be written.",
     )
 
     args = parser.parse_args()
@@ -43,5 +61,11 @@ def main():
                 print(f"  - {error}")
 
         posts = parse_posts(Path(args.path))
+        print(f"\nParsed {len(posts)} posts")
         print(posts[0])
 
+    elif args.command == "convert":
+        convert_export(
+            Path(args.input),
+            Path(args.output),
+        )
