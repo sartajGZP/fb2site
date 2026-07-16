@@ -45,3 +45,18 @@ def write_post(post: Post, export_dir: Path, output_dir: Path) -> None:
             if source.exists():
                 copy2(source, destination)
                 f.write(f"![](images/{relative.as_posix()})\n\n")
+
+        for video in post.videos:
+            source = export_dir / video
+            destination = output_dir / "videos" / video.parent.name / video.name
+
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            copy2(source, destination)
+
+            f.write("\n")
+            f.write("<video controls preload=\"metadata\">\n")
+            f.write(
+                f'  <source src="videos/{video.parent.name}/{video.name}" type="video/mp4">\n'
+            )
+            f.write("</video>\n")
+

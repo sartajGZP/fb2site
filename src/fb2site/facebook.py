@@ -50,7 +50,13 @@ def extract_photos(raw: dict) -> list[Path]:
     return photos
 
 def extract_videos(raw: dict) -> list[Path]:
-    return []
+    videos = []
+
+    uri = raw.get("uri")
+    if uri:
+        videos.append(Path(uri))
+
+    return videos
 
 def parse_post(raw: dict) -> Post:
     """Convert a raw Facebook JSON object into a Post."""
@@ -78,23 +84,43 @@ def parse_posts(export_dir: Path) -> list[Post]:
 
     with post_file.open(encoding="utf-8") as f:
         raw_posts = json.load(f)
-
     posts = []
 
     for raw in raw_posts:
-        post = parse_post(raw)
-        posts.append(post)
-
+        posts.append(parse_post(raw))
     return posts
 
-    for post in posts:
-        if post.photos:
-            print(post.photos[0])
-            break
+def parse_video(raw: dict) -> Post:
+    timestamp = datetime.fromtimestamp(raw["creation_timestamp"])
+    title = fix_mojibake(raw.get("title", ""))
 
-    return posts
+    return Post(
+        id=None,
+        timestamp=timestamp,
+        title=title or "Video",
+        body=fix_mojibake(raw.get("description", "")),
+        links=[],
+        photos=[],
+        videos=extract_videos(raw),
+    )
 
+def parse_videos(export_dir: Path) -> list[Post]:
+    video_file = (
+        export_dir
+        / "your_facebook_activity"
+        / "posts"
+        / "your_videos.json"
+    )
 
+    with video_file.open(encoding="utf-8") as f:
+        raw = json.load(f)
+
+    videos = []
+
+    for item in raw.get("videos_v2", []):
+        videos.append(parse_video(item))
+
+    return videos
 
 def extract_links(raw: dict) -> list[str]:
     links = []
