@@ -32,6 +32,26 @@ def extract_body(raw: dict) -> str:
 
     return ""
 
+
+def extract_photos(raw: dict) -> list[Path]:
+    photos = []
+
+    for attachment in raw.get("attachments", []):
+        for item in attachment.get("data", []):
+            media = item.get("media")
+
+            if not media:
+                continue
+
+            uri = media.get("uri")
+            if uri:
+                photos.append(Path(uri))
+
+    return photos
+
+def extract_videos(raw: dict) -> list[Path]:
+    return []
+
 def parse_post(raw: dict) -> Post:
     """Convert a raw Facebook JSON object into a Post."""
 
@@ -44,6 +64,8 @@ def parse_post(raw: dict) -> Post:
         title=title,
         body = fix_mojibake(extract_body(raw)),
         links=extract_links(raw),
+        photos=extract_photos(raw),
+        videos=extract_videos(raw),
     )
 
 def parse_posts(export_dir: Path) -> list[Post]:
@@ -61,15 +83,17 @@ def parse_posts(export_dir: Path) -> list[Post]:
 
     for raw in raw_posts:
         post = parse_post(raw)
-
-        if "shared a post" in post.title and post.body:
-            print("=" * 60)
-            print(post.title)
-            print(post.body[:100])
-            print("=" * 60)
-
         posts.append(post)
+
     return posts
+
+    for post in posts:
+        if post.photos:
+            print(post.photos[0])
+            break
+
+    return posts
+
 
 
 def extract_links(raw: dict) -> list[str]:
