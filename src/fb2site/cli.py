@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from .inspector import inspect_export
+from .facebook import parse_posts
 
 
 def main():
@@ -40,3 +41,7 @@ def main():
             print("\nErrors:")
             for error in result.errors:
                 print(f"  - {error}")
+
+        posts = parse_posts(Path(args.path))
+        print(posts[0])
+
