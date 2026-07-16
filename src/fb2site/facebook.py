@@ -27,6 +27,7 @@ def parse_post(raw: dict) -> Post:
         timestamp=timestamp,
         title=title,
         body=extract_body(raw),
+        links=extract_links(raw),
     )
 
 def parse_posts(export_dir: Path) -> list[Post]:
@@ -46,3 +47,21 @@ def parse_posts(export_dir: Path) -> list[Post]:
         posts.append(parse_post(raw))
 
     return posts
+
+
+def extract_links(raw: dict) -> list[str]:
+    links = []
+
+    for attachment in raw.get("attachments", []):
+        for item in attachment.get("data", []):
+            external = item.get("external_context")
+
+            if not external:
+                continue
+
+            url = external.get("url")
+
+            if url:
+                links.append(url)
+
+    return links
