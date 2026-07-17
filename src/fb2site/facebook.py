@@ -4,6 +4,7 @@ from datetime import datetime
 import pprint
 
 from .models import Post
+from .language import detect_language
 
 def fix_mojibake(text: str) -> str:
     if "à" not in text:
@@ -63,54 +64,72 @@ def parse_post(raw: dict) -> Post:
 
     timestamp = datetime.fromtimestamp(raw.get("timestamp", 0))
     title = fix_mojibake(raw.get("title", ""))
+    body = fix_mojibake(extract_body(raw))
+
+    language = detect_language(title + "\n" + body)
 
     return Post(
         id=None,
         timestamp=timestamp,
         title=title,
-        body = fix_mojibake(extract_body(raw)),
+        body=body,
         links=extract_links(raw),
         photos=extract_photos(raw),
         videos=extract_videos(raw),
+        language=language,
     )
 
 def parse_posts(export_dir: Path) -> list[Post]:
-    post_file = (
+    posts_dir = (
         export_dir
         / "your_facebook_activity"
         / "posts"
-        / "your_posts__check_ins__photos_and_videos_1.json"
     )
 
-    with post_file.open(encoding="utf-8") as f:
-        raw_posts = json.load(f)
+    if not posts_dir.exists():
+        return []
+
     posts = []
 
-    for raw in raw_posts:
-        posts.append(parse_post(raw))
+    for post_file in sorted(
+        posts_dir.glob("your_posts__check_ins__photos_and_videos*.json")
+    ):
+        with post_file.open(encoding="utf-8") as f:
+            raw_posts = json.load(f)
+
+        for raw in raw_posts:
+            posts.append(parse_post(raw))
+
     return posts
 
 def parse_video(raw: dict) -> Post:
-    timestamp = datetime.fromtimestamp(raw["creation_timestamp"])
+    timestamp = datetime.fromtimestamp(raw.get("creation_timestamp", 0))
     title = fix_mojibake(raw.get("title", ""))
+    body = fix_mojibake(raw.get("description", ""))
+
+    language = detect_language(title + "\n" + body)
 
     return Post(
         id=None,
         timestamp=timestamp,
         title=title or "Video",
-        body=fix_mojibake(raw.get("description", "")),
+        body=body,
         links=[],
         photos=[],
         videos=extract_videos(raw),
+        language=language,
     )
 
 def parse_videos(export_dir: Path) -> list[Post]:
     video_file = (
-        export_dir
-        / "your_facebook_activity"
-        / "posts"
-        / "your_videos.json"
+    export_dir
+    / "your_facebook_activity"
+    / "posts"
+    / "your_videos.json"
     )
+
+    if not video_file.exists():
+        return []
 
     with video_file.open(encoding="utf-8") as f:
         raw = json.load(f)

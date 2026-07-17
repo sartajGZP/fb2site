@@ -32,3 +32,4 @@ class Post:
     links: list[str] = field(default_factory=list)
     photos: list[Path] = field(default_factory=list)
     videos: list[Path] = field(default_factory=list)
+    language: str = "unknown"

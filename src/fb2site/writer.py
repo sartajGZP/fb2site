@@ -2,26 +2,40 @@ from pathlib import Path
 from shutil import copy2
 
 from .models import Post
+from .options import ConvertOptions
+from .markdown import escape_markdown
 
 
-def write_post(post: Post, export_dir: Path, output_dir: Path) -> None:
-    output_dir.mkdir(parents=True, exist_ok=True)
+def write_post(
+    post: Post,
+    export_dir: Path,
+    options: ConvertOptions,
+) -> None:
+    output_dir = options.output_dir
 
     filename = post.timestamp.strftime("%Y-%m-%d-%H%M%S") + ".md"
-    path = output_dir / filename
+
+    content_dir = output_dir / options.content_dir
+    content_dir.mkdir(parents=True, exist_ok=True)
+
+    path = content_dir / filename
 
     with path.open("w", encoding="utf-8") as f:
         # Front matter
         f.write("---\n")
-        f.write(f"title: {post.title}\n")
+        #title = escape_markdown(post.title).replace('"', '\\"')
+        #title = post.title.replace('"', '\\"')
+        f.write(f'title: "{post.title}"\n')
         f.write(f"date: {post.timestamp.isoformat()}\n")
+        f.write(f"layout: {options.layout}\n")
+        f.write(f"lang: {post.language}\n")
         f.write("tags:\n")
         f.write("  - facebook\n")
         f.write("---\n\n")
 
         # Body
         if post.body:
-            f.write(post.body)
+            f.write(escape_markdown(post.body))
             f.write("\n\n")
 
         # Links
@@ -39,24 +53,33 @@ def write_post(post: Post, export_dir: Path, output_dir: Path) -> None:
                 "your_facebook_activity/posts/media"
             )
 
-            destination = output_dir / "images" / relative
+            destination = output_dir / options.image_root / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
 
             if source.exists():
                 copy2(source, destination)
-                f.write(f"![](images/{relative.as_posix()})\n\n")
 
+                image_path = Path("..") / options.image_root / relative
+                f.write(f"![]({image_path.as_posix()})\n\n")
+
+        # Videos
         for video in post.videos:
             source = export_dir / video
-            destination = output_dir / "videos" / video.parent.name / video.name
 
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            copy2(source, destination)
-
-            f.write("\n")
-            f.write("<video controls preload=\"metadata\">\n")
-            f.write(
-                f'  <source src="videos/{video.parent.name}/{video.name}" type="video/mp4">\n'
+            relative = video.relative_to(
+                "your_facebook_activity/posts/media"
             )
-            f.write("</video>\n")
 
+            destination = output_dir / options.video_root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+
+            if source.exists():
+                copy2(source, destination)
+
+                video_path = Path("..") / options.video_root / relative
+
+                f.write("<video controls preload=\"metadata\">\n")
+                f.write(
+                    f'  <source src="{video_path.as_posix()}" type="video/mp4">\n'
+                )
+                f.write("</video>\n\n")
