@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from .convert import convert_export
-from .facebook import parse_posts
+from .takeout import parse_posts
 from .inspector import inspect_export
 
 
@@ -32,13 +32,20 @@ def main():
     )
 
     convert_parser.add_argument(
-        "input",
-        help="Path to the Facebook export directory.",
+    "--format",
+    choices=["takeout", "group"],
+    required=True,
+    help="Input format.",
     )
 
     convert_parser.add_argument(
-        "output",
-        help="Directory where Markdown files will be written.",
+    "input",
+    help="Path to the Facebook export directory or group JSON file.",
+    )
+
+    convert_parser.add_argument(
+    "output",
+    help="Directory where Markdown files will be written.",
     )
 
     args = parser.parse_args()
@@ -68,4 +75,5 @@ def main():
         convert_export(
             Path(args.input),
             Path(args.output),
+            args.format,
         )

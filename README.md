@@ -1,18 +1,138 @@
 # fb2site
 
-Convert Facebook JSON exports into static websites.
+`fb2site` converts a Facebook Takeout export into a static website suitable for Eleventy or other static site generators.
 
-## Goals
+Instead of leaving years of posts locked inside a Facebook archive, `fb2site` creates Markdown files with copied media that can be published anywhere.
 
-- Parse modern Facebook JSON exports.
-- Preserve posts, comments, photos, videos and metadata.
-- Produce clean Markdown suitable for Eleventy.
-- Support additional output formats in the future.
-- Be fully offline.
-- Be tested against multiple Facebook export versions.
+## Features
 
-## Planned commands
+- Converts Facebook posts to Markdown
+- Converts video posts
+- Copies photos and videos into your site
+- Repairs common Facebook mojibake (encoding issues)
+- Extracts links from posts
+- Detects Hindi and English posts
+- Generates Eleventy-compatible front matter
+- Preserves timestamps
+- Clean, modular Python code
 
-fb2site inspect
-fb2site convert
-fb2site validate
+## Output Structure
+
+```
+output/
+├── fb-export/
+│   ├── 2018-01-01-120000.md
+│   ├── 2018-01-03-184500.md
+│   └── ...
+│
+└── assets/
+    ├── IMG/
+    │   └── fb/
+    │       └── ...
+    └── VIDEO/
+        └── fb/
+            └── ...
+```
+
+## Generated Front Matter
+
+```yaml
+---
+title: "Example Post"
+date: 2024-06-01T13:42:18
+layout: page.njk
+lang: en
+tags:
+  - facebook
+---
+```
+
+## Installation
+
+```bash
+git clone https://github.com/<username>/fb2site.git
+cd fb2site
+
+python -m venv .venv
+
+source .venv/bin/activate      # Linux/macOS
+# or
+.venv\Scripts\activate         # Windows
+
+pip install -e .
+```
+
+## Usage
+
+Inspect a Facebook export:
+
+```bash
+fb2site inspect /path/to/facebook-export
+```
+
+Convert an export:
+
+```bash
+fb2site convert /path/to/facebook-export /path/to/output
+```
+
+## Supported Facebook Data
+
+Currently supported:
+
+- Posts
+- Video posts
+- Photos
+- Attached videos
+- Links
+
+## Language Detection
+
+`fb2site` automatically detects whether a post is primarily Hindi or English.
+
+The detected language is written into the generated front matter:
+
+```yaml
+lang: hi
+```
+
+or
+
+```yaml
+lang: en
+```
+
+This can be used by Eleventy for layouts, collections, search, or typography.
+
+## Project Structure
+
+```
+fb2site/
+
+├── cli.py
+├── convert.py
+├── facebook.py
+├── writer.py
+├── markdown.py
+├── language.py
+├── options.py
+├── models.py
+└── inspect.py
+```
+
+## Roadmap
+
+Planned improvements:
+
+- Support additional Facebook export categories
+- Better multilingual language detection
+- Reactions
+- Comments
+- Albums
+- Multiple export merging
+- Unit tests
+- Additional static site generator support
+
+## License
+
+MIT License.

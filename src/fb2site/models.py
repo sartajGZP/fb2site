@@ -33,3 +33,6 @@ class Post:
     photos: list[Path] = field(default_factory=list)
     videos: list[Path] = field(default_factory=list)
     language: str = "unknown"
+    author: str | None = None
+    facebook_url: str | None = None
+    group: str | None = None
