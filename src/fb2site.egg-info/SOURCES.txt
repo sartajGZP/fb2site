@@ -7,6 +7,7 @@ src/fb2site/convert.py
 src/fb2site/group_parser.py
 src/fb2site/inspector.py
 src/fb2site/language.py
+src/fb2site/linkify.py
 src/fb2site/markdown.py
 src/fb2site/models.py
 src/fb2site/options.py

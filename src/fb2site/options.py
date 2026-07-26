@@ -10,4 +10,4 @@ class ConvertOptions:
 
     image_root: Path = Path("assets/img/fb")
     video_root: Path = Path("assets/video/fb")
-    layout: str = "layouts/base.njk"
+    layout: str = "layouts/fb.njk"

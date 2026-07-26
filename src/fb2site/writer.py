@@ -1,10 +1,12 @@
 from pathlib import Path
 from shutil import copy2
 
+
+
 from .models import Post
 from .options import ConvertOptions
 from .markdown import escape_markdown
-
+from .linkify import linkify
 
 def write_post(
     post: Post,
@@ -27,6 +29,14 @@ def write_post(
         #title = post.title.replace('"', '\\"')
         f.write(f'title: "{post.title}"\n')
         f.write(f"date: {post.timestamp.isoformat()}\n")
+        if post.author:
+            f.write(f'author: "{post.author}"\n')
+
+        if post.facebook_url:
+            f.write(f'facebook: "{post.facebook_url}"\n')
+
+        if post.group:
+            f.write(f'group: "{post.group}"\n')
         f.write(f"layout: {options.layout}\n")
         f.write(f"lang: {post.language}\n")
         f.write("tags:\n")
@@ -35,7 +45,7 @@ def write_post(
 
         # Body
         if post.body:
-            f.write(escape_markdown(post.body))
+            f.write(linkify(escape_markdown(post.body)))
             f.write("\n\n")
 
         # Links
