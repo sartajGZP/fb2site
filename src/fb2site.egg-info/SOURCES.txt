@@ -12,9 +12,11 @@ src/fb2site/markdown.py
 src/fb2site/models.py
 src/fb2site/options.py
 src/fb2site/takeout.py
+src/fb2site/takeout_input.py
 src/fb2site/writer.py
 src/fb2site.egg-info/PKG-INFO
 src/fb2site.egg-info/SOURCES.txt
 src/fb2site.egg-info/dependency_links.txt
 src/fb2site.egg-info/entry_points.txt
+src/fb2site.egg-info/requires.txt
 src/fb2site.egg-info/top_level.txt

@@ -1,8 +1,6 @@
 from pathlib import Path
 from shutil import copy2
 
-
-
 from .models import Post
 from .options import ConvertOptions
 from .markdown import escape_markdown
@@ -30,7 +28,10 @@ def write_post(
         f.write(f'title: "{post.title}"\n')
         f.write(f"date: {post.timestamp.isoformat()}\n")
         if post.author:
-            f.write(f'author: "{post.author}"\n')
+            #f.write(f'author: "{post.author}"\n')
+            pass
+
+        f.write(f'author: "Sartaj Ansari"\n')
 
         if post.facebook_url:
             f.write(f'facebook: "{post.facebook_url}"\n')

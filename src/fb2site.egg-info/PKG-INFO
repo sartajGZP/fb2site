@@ -4,6 +4,7 @@ Version: 0.1.0
 Summary: Convert Facebook JSON exports into static websites.
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
+Requires-Dist: linkify-it-py>=2.1.0
 
 # fb2site
 
