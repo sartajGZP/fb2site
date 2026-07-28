@@ -6,11 +6,11 @@ import java.nio.file.Path
 import java.util.zip.ZipInputStream
 import kotlin.io.path.inputStream
 
-class ZipExtractor(
+class TakeoutArchive(
     zipFile: Path
 ) : AutoCloseable {
 
-    val root: Path = Files.createTempDirectory("fb2site-")
+    val path: Path = Files.createTempDirectory("fb2site-")
 
     init {
         extract(zipFile)
@@ -23,7 +23,7 @@ class ZipExtractor(
 
             while (entry != null) {
 
-                val destination = root.resolve(entry.name)
+                val destination = path.resolve(entry.name)
 
                 if (entry.isDirectory) {
                     Files.createDirectories(destination)
@@ -43,7 +43,7 @@ class ZipExtractor(
     }
 
     override fun close() {
-        deleteRecursively(root)
+        deleteRecursively(path)
     }
 
     private fun deleteRecursively(path: Path) {

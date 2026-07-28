@@ -1,6 +1,7 @@
 package `in`.sartaj.fb2site.model
 
 import java.time.Instant
+import java.nio.file.Path
 
 data class Post(
     val id: String?,
@@ -9,8 +10,8 @@ data class Post(
     val body: String,
 
     val links: List<String> = emptyList(),
-    val photos: List<String> = emptyList(),
-    val videos: List<String> = emptyList(),
+    val photos: List<Path> = emptyList(),
+    val videos: List<Path> = emptyList(),
 
     val language: String = "unknown",
     val author: String? = null,
