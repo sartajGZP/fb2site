@@ -1,4 +1,4 @@
-package in.sartaj.fb2site.model
+package `in`.sartaj.fb2site.model
 
 import java.time.Instant
 

@@ -1,11 +1,12 @@
-package in.sartaj.fb2site.takeout
+package `in`.sartaj.fb2site.takeout
 
-import in.sartaj.fb2site.model.Post
-import org.json.JSONArray
+import `in`.sartaj.fb2site.model.Post
 import java.nio.file.Files
 import java.nio.file.Path
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
-"""
+/*
 class TakeoutParser {
 
     fun parse(root: Path): List<Post> {
@@ -46,6 +47,6 @@ class TakeoutParser {
         return posts
     }
 }
-"""
+*/
 
 class TakeoutParser

@@ -1,4 +1,4 @@
-package in.sartaj.fb2site.takeout
+package `in`.sartaj.fb2site.takeout
 
 import java.io.IOException
 import java.nio.file.Files

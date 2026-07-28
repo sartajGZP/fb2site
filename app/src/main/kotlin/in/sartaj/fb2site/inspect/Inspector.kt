@@ -1,6 +1,6 @@
-package in.sartaj.fb2site.inspect
+package `in`.sartaj.fb2site.inspect
 
-import in.sartaj.fb2site.model.Inspection
+import `in`.sartaj.fb2site.model.Inspection
 import java.nio.file.Files
 import java.nio.file.Path
 

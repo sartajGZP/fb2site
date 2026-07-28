@@ -1,4 +1,4 @@
-package in.sartaj.fb2site.model
+package `in`.sartaj.fb2site.model
 
 data class Inspection(
     var inputExists: Boolean = false,

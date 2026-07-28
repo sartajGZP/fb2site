@@ -1,12 +1,14 @@
-package in.sartaj.fb2site.util
+package `in`.sartaj.fb2site.util
 
 import org.nibor.autolink.LinkExtractor
 import org.nibor.autolink.LinkType
+import java.util.EnumSet
 
 private val linkExtractor = LinkExtractor.builder()
     .linkTypes(EnumSet.of(LinkType.URL))
     .build()
-"""
+
+/*
 fun linkify(text: String): String {
     if (text.isEmpty()) {
         return text
@@ -30,5 +32,6 @@ fun linkify(text: String): String {
 
     return result.toString()
 }
-"""
+*/
+
 fun linkify(text: String): String = text

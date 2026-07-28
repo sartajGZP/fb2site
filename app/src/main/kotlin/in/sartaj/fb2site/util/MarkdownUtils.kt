@@ -1,4 +1,4 @@
-package in.sartaj.fb2site.util
+package `in`.sartaj.fb2site.util
 
 fun escapeMarkdown(text: String): String =
     text
