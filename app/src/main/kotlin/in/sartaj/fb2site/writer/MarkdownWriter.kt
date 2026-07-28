@@ -34,20 +34,33 @@ object MarkdownWriter {
     }
 
     private fun createOutputFile(
-        post: Post,
-        options: ConvertOptions,
-    ): Path {
+    post: Post,
+    options: ConvertOptions,
+): Path {
 
-        val contentDir =
-            options.outputDir.resolve(options.contentDir)
+    val contentDir =
+        options.outputDir.resolve(options.contentDir)
 
-        Files.createDirectories(contentDir)
+    Files.createDirectories(contentDir)
 
-        val filename =
-            fileFormatter.format(post.timestamp) + ".md"
+    val baseName =
+        fileFormatter.format(post.timestamp)
 
-        return contentDir.resolve(filename)
+    var outputFile =
+        contentDir.resolve("$baseName.md")
+
+    var counter = 2
+
+    while (Files.exists(outputFile)) {
+
+        outputFile =
+            contentDir.resolve("$baseName-$counter.md")
+
+        counter++
     }
+
+    return outputFile
+}
 
     private fun writeFrontMatter(
     writer: BufferedWriter,

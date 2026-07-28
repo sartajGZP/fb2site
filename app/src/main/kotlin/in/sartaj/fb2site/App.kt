@@ -7,7 +7,6 @@ import `in`.sartaj.fb2site.takeout.readPostsFile
 import `in`.sartaj.fb2site.takeout.extractBody
 import `in`.sartaj.fb2site.util.fixMojibake
 import `in`.sartaj.fb2site.takeout.parsePost
-import `in`.sartaj.fb2site.takeout.extractLinks
 import `in`.sartaj.fb2site.writer.MarkdownWriter
 import `in`.sartaj.fb2site.model.ConvertOptions
 import java.nio.file.Paths
@@ -22,17 +21,24 @@ fun main(args: Array<String>) {
 
     println(files)
 val json  = readPostsFile(files.first())
-val post = parsePost(json[6])
-print(post)
-println(post.photos)
-
-MarkdownWriter.writePost(
-    post,
-    archive.path,
-    ConvertOptions(
-        outputDir = Paths.get("output")
-    )
+val options = ConvertOptions(
+    outputDir = Paths.get("output")
 )
+println("JSON posts: ${json.size()}")
+var count = 0
+for (node in json) {
+
+    val post = parsePost(node)
+
+    MarkdownWriter.writePost(
+        post,
+        archive.path,
+        options
+    )
+    count++
+}
+println("written: $count")
+
     println(result)
 
 

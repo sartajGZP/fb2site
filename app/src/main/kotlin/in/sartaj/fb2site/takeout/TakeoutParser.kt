@@ -102,6 +102,19 @@ fun extractPhotos(raw: JsonNode): List<Path> {
     return photos
 }
 
+fun extractVideos(raw: JsonNode): List<Path> {
+
+    val videos = mutableListOf<Path>()
+
+    val uri = raw.path("uri").asText()
+
+    if (uri.isNotBlank()) {
+        videos.add(Path.of(uri))
+    }
+
+    return videos
+}
+
 fun parsePost(raw: JsonNode): Post {
 
     val timestamp = Instant.ofEpochSecond(
@@ -123,7 +136,7 @@ fun parsePost(raw: JsonNode): Post {
         body = body,
 	links = extractLinks(raw),
 	photos = extractPhotos(raw),
-        videos = mutableListOf(),
+	videos = extractVideos(raw),
         language = "unknown"
     )
 }
