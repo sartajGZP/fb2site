@@ -4,43 +4,46 @@ import `in`.sartaj.fb2site.inspect.inspectExport
 import `in`.sartaj.fb2site.takeout.TakeoutArchive
 import `in`.sartaj.fb2site.takeout.findPostsFiles
 import `in`.sartaj.fb2site.takeout.readPostsFile
-import `in`.sartaj.fb2site.takeout.extractBody
+import `in`.sartaj.fb2site.takeout.readPostsFile
+import `in`.sartaj.fb2site.takeout.readVideosFile
+import `in`.sartaj.fb2site.takeout.findVideosFile
+import `in`.sartaj.fb2site.takeout.parsePosts
+import `in`.sartaj.fb2site.takeout.parseVideos
 import `in`.sartaj.fb2site.util.fixMojibake
 import `in`.sartaj.fb2site.takeout.parsePost
 import `in`.sartaj.fb2site.writer.MarkdownWriter
 import `in`.sartaj.fb2site.model.ConvertOptions
+import `in`.sartaj.fb2site.cli.printHelp
+import `in`.sartaj.fb2site.cli.convertCommand
+import `in`.sartaj.fb2site.cli.inspectCommand
+import `in`.sartaj.fb2site.cli.printHelp
+
 import java.nio.file.Paths
 
 fun main(args: Array<String>) {
-	println("Working directory: ${System.getProperty("user.dir")}")
 
-    val archive = TakeoutArchive(Paths.get(args[0]))
+    if (args.isEmpty()) {
+        printHelp()
+        return
+    }
 
-    val result = inspectExport(archive.path)
-    val files = findPostsFiles(archive.path)
+    when (args[0]) {
 
-    println(files)
-val json  = readPostsFile(files.first())
-val options = ConvertOptions(
-    outputDir = Paths.get("output")
-)
-println("JSON posts: ${json.size()}")
-var count = 0
-for (node in json) {
+        "help" -> {
+            printHelp()
+        }
 
-    val post = parsePost(node)
+        "convert" -> {
+            convertCommand(args)
+        }
 
-    MarkdownWriter.writePost(
-        post,
-        archive.path,
-        options
-    )
-    count++
-}
-println("written: $count")
+        "inspect" -> {
+            inspectCommand(args)
+        }
 
-    println(result)
-
-
-    archive.close()
+        else -> {
+            println("Unknown command: ${args[0]}")
+            printHelp()
+        }
+    }
 }

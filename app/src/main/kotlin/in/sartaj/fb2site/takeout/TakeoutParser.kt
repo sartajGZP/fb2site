@@ -1,6 +1,9 @@
 package `in`.sartaj.fb2site.takeout
+
 import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.util.linkify
 import `in`.sartaj.fb2site.util.fixMojibake
+import `in`.sartaj.fb2site.util.detectLanguage
 
 import java.time.Instant
 import java.nio.file.Files
@@ -121,13 +124,21 @@ fun parsePost(raw: JsonNode): Post {
         raw.path("timestamp").asLong()
     )
 
-    val title = fixMojibake(
+    val title = linkify(
+    fixMojibake(
         raw.path("title").asText("")
     )
+)
 
-    val body = fixMojibake(
+val body = linkify(
+    fixMojibake(
         extractBody(raw)
     )
+)
+
+val language = detectLanguage(
+    "$title\n$body"
+)
 
     return Post(
         id = null,
@@ -137,6 +148,27 @@ fun parsePost(raw: JsonNode): Post {
 	links = extractLinks(raw),
 	photos = extractPhotos(raw),
 	videos = extractVideos(raw),
-        language = "unknown"
+	language = language,
+	author = null,
+    	facebookUrl = null,
+    	group = null
     )
+}
+
+fun parsePosts(root: Path): List<Post> {
+
+    val posts = mutableListOf<Post>()
+
+    val files = findPostsFiles(root)
+
+    for (file in files) {
+
+        val json = readPostsFile(file)
+
+        for (node in json) {
+            posts.add(parsePost(node))
+        }
+    }
+
+    return posts
 }

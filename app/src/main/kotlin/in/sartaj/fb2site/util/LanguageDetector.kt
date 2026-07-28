@@ -1,16 +1,19 @@
-package `in`.sartaj.fb2site.language
+package `in`.sartaj.fb2site.util
 
-object LanguageDetector {
+    fun detectLanguage(text: String): String {
+var devanagari = 0
+var latin = 0
 
-    fun detect(text: String): String {
-        if (text.isBlank()) {
-            return "unknown"
-        }
-
-        return if (text.any { it in '\u0900'..'\u097F' }) {
-            "hi"
-        } else {
-            "en"
-        }
+for (c in text) {
+    when {
+        c in '\u0900'..'\u097F' -> devanagari++
+        c.isLetter() && c.code < 128 -> latin++
     }
+}
+
+return when {
+    devanagari == 0 && latin == 0 -> "unknown"
+    devanagari > latin -> "hi"
+    else -> "en"
+}
 }

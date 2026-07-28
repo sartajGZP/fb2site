@@ -6,6 +6,8 @@ import `in`.sartaj.fb2site.model.Post
 import java.io.BufferedWriter
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -32,6 +34,104 @@ object MarkdownWriter {
             writeVideos(writer, post, exportDir, options)
         }
     }
+	
+    private fun writePhotos(
+    writer: BufferedWriter,
+    post: Post,
+    exportDir: Path,
+    options: ConvertOptions,
+) {
+
+    for (photo in post.photos) {
+
+        val source =
+            exportDir.resolve(photo)
+
+        val relative =
+            Paths.get(
+                "your_facebook_activity",
+                "posts",
+                "media"
+            ).relativize(photo)
+
+        val destination =
+            options.outputDir
+                .resolve(options.imageRoot)
+                .resolve(relative)
+
+        Files.createDirectories(destination.parent)
+
+        if (Files.exists(source)) {
+
+            Files.copy(
+                source,
+                destination,
+                StandardCopyOption.REPLACE_EXISTING
+            )
+
+            val imagePath =
+                Paths.get("..")
+                    .resolve(options.imageRoot)
+                    .resolve(relative)
+
+            writer.write("![](${imagePath.toString().replace('\\', '/')})")
+            writer.newLine()
+            writer.newLine()
+        }
+    }
+}
+	
+private fun writeVideos(
+    writer: BufferedWriter,
+    post: Post,
+    exportDir: Path,
+    options: ConvertOptions,
+) {
+
+    for (video in post.videos) {
+
+        val source =
+            exportDir.resolve(video)
+
+        val relative =
+            Path.of(
+                "your_facebook_activity",
+                "posts",
+                "media"
+            ).relativize(video)
+
+        val destination =
+            options.outputDir
+                .resolve(options.videoRoot)
+                .resolve(relative)
+
+        Files.createDirectories(destination.parent)
+
+        if (Files.exists(source)) {
+
+            Files.copy(
+                source,
+                destination,
+                StandardCopyOption.REPLACE_EXISTING
+            )
+
+            val videoPath =
+                Path.of("..")
+                    .resolve(options.videoRoot)
+                    .resolve(relative)
+
+            writer.write("<video controls preload=\"metadata\">")
+            writer.newLine()
+
+            writer.write("""    <source src="${videoPath.toString().replace('\\', '/')}" type="video/mp4">""")
+            writer.newLine()
+
+            writer.write("</video>")
+            writer.newLine()
+            writer.newLine()
+        }
+    }
+}
 
     private fun createOutputFile(
     post: Post,
@@ -132,20 +232,5 @@ object MarkdownWriter {
         writer.newLine()
     }
 }
-private fun writePhotos(
-    writer: BufferedWriter,
-    post: Post,
-    exportDir: Path,
-    options: ConvertOptions,
-) {
-    // TODO: Copy photos and write Markdown image links.
-}
-    private fun writeVideos(
-        writer: BufferedWriter,
-        post: Post,
-        exportDir: Path,
-        options: ConvertOptions,
-    ) {
-        //TODO()
-    }
-}
+
+   }

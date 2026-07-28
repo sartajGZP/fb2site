@@ -37,6 +37,7 @@ java {
 application {
     // Define the main class for the application.
     mainClass = "in.sartaj.fb2site.AppKt"
+    applicationName = "fb2site"
 }
 
 tasks.named<Test>("test") {
