@@ -17,6 +17,7 @@ import `in`.sartaj.fb2site.cli.printHelp
 import `in`.sartaj.fb2site.cli.convertCommand
 import `in`.sartaj.fb2site.cli.inspectCommand
 import `in`.sartaj.fb2site.cli.printHelp
+import `in`.sartaj.fb2site.cli.groupsCommand
 
 import java.nio.file.Paths
 
@@ -40,6 +41,7 @@ fun main(args: Array<String>) {
         "inspect" -> {
             inspectCommand(args)
         }
+	"groups" -> groupsCommand(args)
 
         else -> {
             println("Unknown command: ${args[0]}")
