@@ -4,6 +4,8 @@ import `in`.sartaj.fb2site.model.ConvertOptions
 import `in`.sartaj.fb2site.takeout.parsePosts
 import `in`.sartaj.fb2site.takeout.parseVideos
 import `in`.sartaj.fb2site.writer.MarkdownWriter
+import `in`.sartaj.fb2site.writer.HtmlWriter
+import `in`.sartaj.fb2site.writer.TextWriter
 import `in`.sartaj.fb2site.inspect.inspectExport
 import `in`.sartaj.fb2site.takeout.TakeoutArchive
 import `in`.sartaj.fb2site.groups.parseGroupPosts
@@ -29,13 +31,18 @@ fun convertCommand(args: Array<String>) {
         parseVideos(archive.path)
 
     for (post in allPosts) {
-        MarkdownWriter.writePost(
+        HtmlWriter.writePost(
             post,
             archive.path,
             options
         )
-    }
 
+	TextWriter.writePost(
+    post,
+    options
+)
+    }
+	
     println("Converted ${allPosts.size} posts.")
 
     archive.close()
@@ -92,12 +99,17 @@ fun groupsCommand(args: Array<String>) {
     )
 
     for (post in posts) {
-        MarkdownWriter.writePost(
-            post,
-            Paths.get(args[1]).parent,
-            options
-        )
-    }
+    HtmlWriter.writePost(
+        post,
+        Paths.get(args[1]).parent,
+        options
+    )
+
+    TextWriter.writePost(
+        post,
+        options
+    )
+}
 
     println("Converted ${posts.size} group posts.")
 }

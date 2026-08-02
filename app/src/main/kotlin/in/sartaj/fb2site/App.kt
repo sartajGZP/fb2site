@@ -12,6 +12,7 @@ import `in`.sartaj.fb2site.takeout.parseVideos
 import `in`.sartaj.fb2site.util.fixMojibake
 import `in`.sartaj.fb2site.takeout.parsePost
 import `in`.sartaj.fb2site.writer.MarkdownWriter
+import `in`.sartaj.fb2site.writer.HtmlWriter
 import `in`.sartaj.fb2site.model.ConvertOptions
 import `in`.sartaj.fb2site.cli.printHelp
 import `in`.sartaj.fb2site.cli.convertCommand
