@@ -4,6 +4,7 @@ __pycache__/
 .venv/
 app/output/
 app/build/
+tk.zip
 out/
 2026*
 
