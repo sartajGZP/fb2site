@@ -16,3 +16,4 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+# Updated for HtmlWriter tests
