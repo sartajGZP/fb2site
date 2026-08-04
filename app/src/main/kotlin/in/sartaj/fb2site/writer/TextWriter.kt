@@ -23,8 +23,8 @@ object TextWriter {
 
         Files.createDirectories(dir)
 
-        val hash = sha256(body)
-        val file = dir.resolve("$hash.txt")
+        val fileName = post.id ?: sha256(body)
+        val file = dir.resolve("$fileName.txt")
 
         Files.writeString(file, body)
     }

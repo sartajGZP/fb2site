@@ -46,6 +46,11 @@ object HtmlWriter {
         writer.write("date: ${post.timestamp}")
         writer.newLine()
 
+        if (post.id != null) {
+            writer.write("""id: "${post.id}"""")
+            writer.newLine()
+        }
+
         if (post.author != null) {
             writer.write("""author: "${post.author}"""")
             writer.newLine()
