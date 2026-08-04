@@ -1,2 +1,0 @@
-[console_scripts]
-fb2site = fb2site.cli:main
