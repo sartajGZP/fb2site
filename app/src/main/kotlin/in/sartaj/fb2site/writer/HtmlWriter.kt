@@ -2,6 +2,8 @@ package `in`.sartaj.fb2site.writer
 
 import `in`.sartaj.fb2site.model.ConvertOptions
 import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.util.linkifyHtml
+
 import java.io.BufferedWriter
 import java.nio.file.Files
 import java.nio.file.Path
@@ -12,9 +14,12 @@ import java.time.format.DateTimeFormatter
 
 object HtmlWriter {
 
-    private val fileFormatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss")
-            .withZone(ZoneOffset.UTC)
+    private val fileFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss")
+        .withZone(ZoneOffset.UTC)
+
+    // Formatters for front matter grouping
+    private val yearFormatter = DateTimeFormatter.ofPattern("yyyy").withZone(ZoneOffset.UTC)
+    private val monthFormatter = DateTimeFormatter.ofPattern("MM").withZone(ZoneOffset.UTC)
 
     fun writePost(
         post: Post,
@@ -22,7 +27,6 @@ object HtmlWriter {
         options: ConvertOptions,
     ) {
         val outputFile = createOutputFile(post, options)
-        println(outputFile.toAbsolutePath())
         println("Writing to: $outputFile")
 
         Files.newBufferedWriter(outputFile).use { writer ->
@@ -44,6 +48,12 @@ object HtmlWriter {
         writer.write("""title: "${post.title.replace("\"", "\\\"")}"""")
         writer.newLine()
         writer.write("date: ${post.timestamp}")
+        writer.newLine()
+        
+        // ADDED: Explicit year and month fields for instant Nunjucks/11ty filtering
+        writer.write("""year: "${yearFormatter.format(post.timestamp)}"""")
+        writer.newLine()
+        writer.write("""month: "${monthFormatter.format(post.timestamp)}"""")
         writer.newLine()
 
         if (post.id != null) {
@@ -84,15 +94,20 @@ object HtmlWriter {
         post: Post,
     ) {
         if (post.body.isBlank()) return
-
-        // Splitting paragraphs on double line-breaks and wrapping in <p> tags for 11ty
+        
         post.body.trim().split(Regex("\r?\n\r?\n+")).forEach { paragraph ->
+            // 1. Escape HTML and convert newlines
             val safeParagraph = escapeHtml(paragraph).replace("\n", "<br>")
-            writer.write("<p>$safeParagraph</p>")
+            
+            // 2. Wrap plain text URLs in <a> tags using your autolink library
+            val linkifiedParagraph = linkifyHtml(safeParagraph)
+            
+            writer.write("<p>$linkifiedParagraph</p>")
             writer.newLine()
         }
         writer.newLine()
     }
+
 
     private fun writeLinks(
         writer: BufferedWriter,
@@ -139,7 +154,8 @@ object HtmlWriter {
                     StandardCopyOption.REPLACE_EXISTING
                 )
 
-                val imagePath = Paths.get("..")
+                // REFACTORED: Root-relative web paths (e.g., /images/...) prevent broken links across nested routes
+                val imagePath = Paths.get("/")
                     .resolve(options.imageRoot)
                     .resolve(relative)
 
@@ -178,7 +194,8 @@ object HtmlWriter {
                     StandardCopyOption.REPLACE_EXISTING
                 )
 
-                val videoPath = Path.of("..")
+                // REFACTORED: Root-relative web paths for videos
+                val videoPath = Path.of("/")
                     .resolve(options.videoRoot)
                     .resolve(relative)
 
@@ -194,24 +211,37 @@ object HtmlWriter {
         }
     }
 
-    private fun createOutputFile(
+        private fun createOutputFile(
         post: Post,
         options: ConvertOptions,
     ): Path {
-        val contentDir = options.outputDir.resolve(options.contentDir)
-        Files.createDirectories(contentDir)
+        // Extract UTC year ("YYYY") and month ("MM") from timestamp
+        val year = yearFormatter.format(post.timestamp)
+        val month = monthFormatter.format(post.timestamp)
+
+        // Target directory: <outputDir>/<contentDir>/<YYYY>/<MM>
+        // Example: _site_src/fb-export/2026/05
+        val targetDir = options.outputDir
+            .resolve(options.contentDir)
+            .resolve(year)
+            .resolve(month)
+
+        // Ensure directories exist on disk
+        Files.createDirectories(targetDir)
 
         val baseName = fileFormatter.format(post.timestamp)
-        var outputFile = contentDir.resolve("$baseName.html")
+        var outputFile = targetDir.resolve("$baseName.html")
         var counter = 2
 
+        // Handle collision safety
         while (Files.exists(outputFile)) {
-            outputFile = contentDir.resolve("$baseName-$counter.html")
+            outputFile = targetDir.resolve("$baseName-$counter.html")
             counter++
         }
 
         return outputFile
     }
+
 
     private fun escapeHtml(text: String): String {
         return text

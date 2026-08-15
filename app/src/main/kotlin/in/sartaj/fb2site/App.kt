@@ -4,7 +4,6 @@ import `in`.sartaj.fb2site.inspect.inspectExport
 import `in`.sartaj.fb2site.takeout.TakeoutArchive
 import `in`.sartaj.fb2site.takeout.findPostsFiles
 import `in`.sartaj.fb2site.takeout.readPostsFile
-import `in`.sartaj.fb2site.takeout.readPostsFile
 import `in`.sartaj.fb2site.takeout.readVideosFile
 import `in`.sartaj.fb2site.takeout.findVideosFile
 import `in`.sartaj.fb2site.takeout.parsePosts
@@ -19,6 +18,7 @@ import `in`.sartaj.fb2site.cli.convertCommand
 import `in`.sartaj.fb2site.cli.inspectCommand
 import `in`.sartaj.fb2site.cli.printHelp
 import `in`.sartaj.fb2site.cli.groupsCommand
+
 
 import java.nio.file.Paths
 

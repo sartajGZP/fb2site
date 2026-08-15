@@ -4,14 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode
 import `in`.sartaj.fb2site.model.Post
 import `in`.sartaj.fb2site.util.detectLanguage
 import `in`.sartaj.fb2site.util.fixMojibake
-import `in`.sartaj.fb2site.util.linkify
+import `in`.sartaj.fb2site.util.linkifyMarkdown
 import java.nio.file.Path
 import java.time.Instant
 
 
 fun parseGroupPost(raw: JsonNode): Post {
 
-    val body = linkify(
+    val body = linkifyMarkdown(
         fixMojibake(
             raw.path("text").asText("")
         )

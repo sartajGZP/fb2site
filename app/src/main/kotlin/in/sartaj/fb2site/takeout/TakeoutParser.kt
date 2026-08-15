@@ -1,7 +1,7 @@
 package `in`.sartaj.fb2site.takeout
 
 import `in`.sartaj.fb2site.model.Post
-import `in`.sartaj.fb2site.util.linkify
+import `in`.sartaj.fb2site.util.linkifyMarkdown
 import `in`.sartaj.fb2site.util.fixMojibake
 import `in`.sartaj.fb2site.util.detectLanguage
 
@@ -124,13 +124,13 @@ fun parsePost(raw: JsonNode): Post {
         raw.path("timestamp").asLong()
     )
 
-    val title = linkify(
+    val title = linkifyMarkdown(
     fixMojibake(
         raw.path("title").asText("")
     )
 )
 
-val body = linkify(
+val body = linkifyMarkdown(
     fixMojibake(
         extractBody(raw)
     )
