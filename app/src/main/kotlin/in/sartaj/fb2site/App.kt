@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
         "inspect" -> {
             inspectCommand(args)
         }
-	"groups" -> groupsCommand(args)
+    	"groups" -> groupsCommand(args)
 
         else -> {
             println("Unknown command: ${args[0]}")

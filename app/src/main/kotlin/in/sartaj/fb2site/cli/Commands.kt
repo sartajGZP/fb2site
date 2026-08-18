@@ -19,6 +19,7 @@ private fun writePostByFormat(
     exportDir: Path,
     options: ConvertOptions
 ) {
+	// see model / Convert options for formatting 
     when (options.format) {
         OutputFormat.HTML -> {
             HtmlWriter.writePost(post, exportDir, options)

@@ -7,10 +7,11 @@ import java.nio.file.Paths
  * Defines the output file format options for exported Facebook content.
  */
 enum class OutputFormat {
-    ALL,       // Generates both HTML and plain Text outputs
-    HTML,      // Generates only HTML files with Eleventy front matter
-    MARKDOWN,  // Generates Markdown (.md) files
-    TEXT       // Generates plain text (.txt) files
+    ALL,
+    HTML,      
+    MARKDOWN,  
+    TEXT      
+    // only texts are generated without front matter
 }
 
 /**
