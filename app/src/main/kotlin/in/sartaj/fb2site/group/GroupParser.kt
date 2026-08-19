@@ -10,12 +10,9 @@ import java.time.Instant
 
 
 fun parseGroupPost(raw: JsonNode): Post {
-
-    val body = linkifyMarkdown(
-        fixMojibake(
-            raw.path("text").asText("")
-        )
-    )
+    val body = fixMojibake(
+        raw.path("text").asText("")
+	)
 
     return Post(
         id = raw.path("id").asText(),
