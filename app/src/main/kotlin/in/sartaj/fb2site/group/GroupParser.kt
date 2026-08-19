@@ -1,7 +1,7 @@
 package `in`.sartaj.fb2site.groups
 
 import com.fasterxml.jackson.databind.JsonNode
-import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.model.NormalisedPost
 import `in`.sartaj.fb2site.util.detectLanguage
 import `in`.sartaj.fb2site.util.fixMojibake
 import `in`.sartaj.fb2site.util.linkifyMarkdown
@@ -9,12 +9,12 @@ import java.nio.file.Path
 import java.time.Instant
 
 
-fun parseGroupPost(raw: JsonNode): Post {
+fun parseGroupPost(raw: JsonNode): NormalisedPost {
     val body = fixMojibake(
         raw.path("text").asText("")
 	)
 
-    return Post(
+    return NormalisedPost(
         id = raw.path("id").asText(),
         timestamp = Instant.parse(
             raw.path("time").asText()
@@ -37,7 +37,7 @@ fun parseGroupPost(raw: JsonNode): Post {
 
 fun parseGroupPosts(
     file: Path,
-): List<Post> {
+): List<NormalisedPost> {
 
     val json =
         readGroupPostsFile(file)

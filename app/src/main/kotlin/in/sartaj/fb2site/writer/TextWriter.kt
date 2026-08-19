@@ -1,14 +1,14 @@
 package `in`.sartaj.fb2site.writer
 
 import `in`.sartaj.fb2site.model.ConvertOptions
-import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.model.NormalisedPost
 import java.nio.file.Files
 import java.security.MessageDigest
 
 object TextWriter {
 
     fun writePost(
-        post: Post,
+        post: NormalisedPost,
         options: ConvertOptions,
     ) {
         val body = post.body.trim()

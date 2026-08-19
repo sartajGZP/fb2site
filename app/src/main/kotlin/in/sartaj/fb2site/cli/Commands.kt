@@ -4,7 +4,7 @@ import `in`.sartaj.fb2site.groups.parseGroupPosts
 import `in`.sartaj.fb2site.inspect.inspectExport
 import `in`.sartaj.fb2site.model.ConvertOptions
 import `in`.sartaj.fb2site.model.OutputFormat
-import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.model.NormalisedPost
 import `in`.sartaj.fb2site.takeout.TakeoutArchive
 import `in`.sartaj.fb2site.takeout.parsePosts
 import `in`.sartaj.fb2site.takeout.parseVideos
@@ -15,7 +15,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 private fun writePostByFormat(
-    post: Post,
+    post: NormalisedPost,
     exportDir: Path,
     options: ConvertOptions
 ) {

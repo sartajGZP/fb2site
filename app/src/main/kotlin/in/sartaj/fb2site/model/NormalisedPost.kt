@@ -5,7 +5,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.nio.file.Path
 
-data class Post(
+data class NormalisedPost(
     val id: String?,
     val timestamp: Instant,
     val title: String,

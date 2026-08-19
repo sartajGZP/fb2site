@@ -1,6 +1,6 @@
 package `in`.sartaj.fb2site.takeout
 
-import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.model.NormalisedPost
 import `in`.sartaj.fb2site.util.fixMojibake
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -26,9 +26,9 @@ fun readVideosFile(file: Path): JsonNode {
     return root["videos_v2"]
 }
 
-fun parseVideo(raw: JsonNode): Post {
+fun parseVideo(raw: JsonNode): NormalisedPost {
 
-    return Post(
+    return NormalisedPost(
         id = null,
         timestamp = Instant.ofEpochSecond(
             raw["creation_timestamp"].asLong()
@@ -50,9 +50,9 @@ fun parseVideo(raw: JsonNode): Post {
 }
 
 
-fun parseVideos(root: Path): List<Post> {
+fun parseVideos(root: Path): List<NormalisedPost> {
 
-    val videos = mutableListOf<Post>()
+    val videos = mutableListOf<NormalisedPost>()
 
     val json = readVideosFile(findVideosFile(root))
 

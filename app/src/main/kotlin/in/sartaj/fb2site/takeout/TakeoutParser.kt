@@ -1,6 +1,6 @@
 package `in`.sartaj.fb2site.takeout
 
-import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.model.NormalisedPost
 import `in`.sartaj.fb2site.util.linkifyMarkdown
 import `in`.sartaj.fb2site.util.fixMojibake
 import `in`.sartaj.fb2site.util.detectLanguage
@@ -118,7 +118,7 @@ fun extractVideos(raw: JsonNode): List<Path> {
     return videos
 }
 
-fun parsePost(raw: JsonNode): Post {
+fun parsePost(raw: JsonNode): NormalisedPost {
 
     val timestamp = Instant.ofEpochSecond(
         raw.path("timestamp").asLong()
@@ -140,7 +140,7 @@ val language = detectLanguage(
     "$title\n$body"
 )
 
-    return Post(
+    return NormalisedPost(
         id = null,
         timestamp = timestamp,
         title = title,
@@ -155,9 +155,9 @@ val language = detectLanguage(
     )
 }
 
-fun parsePosts(root: Path): List<Post> {
+fun parsePosts(root: Path): List<NormalisedPost> {
 
-    val posts = mutableListOf<Post>()
+    val posts = mutableListOf<NormalisedPost>()
 
     val files = findPostsFiles(root)
 

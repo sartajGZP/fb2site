@@ -1,7 +1,7 @@
 package `in`.sartaj.fb2site.writer
 
 import `in`.sartaj.fb2site.model.ConvertOptions
-import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.model.NormalisedPost
 import `in`.sartaj.fb2site.util.linkifyHtml
 
 import java.io.BufferedWriter
@@ -22,7 +22,7 @@ object HtmlWriter {
     private val monthFormatter = DateTimeFormatter.ofPattern("MM").withZone(ZoneOffset.UTC)
 
     fun writePost(
-        post: Post,
+        post: NormalisedPost,
         exportDir: Path,
         options: ConvertOptions,
     ) {
@@ -40,7 +40,7 @@ object HtmlWriter {
 
     private fun writeFrontMatter(
         writer: BufferedWriter,
-        post: Post,
+        post: NormalisedPost,
         options: ConvertOptions,
     ) {
         writer.write("---")
@@ -91,7 +91,7 @@ object HtmlWriter {
 
     private fun writeBody(
         writer: BufferedWriter,
-        post: Post,
+        post: NormalisedPost,
     ) {
         if (post.body.isBlank()) return
         
@@ -111,7 +111,7 @@ object HtmlWriter {
 
     private fun writeLinks(
         writer: BufferedWriter,
-        post: Post,
+        post: NormalisedPost,
     ) {
         if (post.links.isEmpty()) return
 
@@ -129,7 +129,7 @@ object HtmlWriter {
 
     private fun writePhotos(
         writer: BufferedWriter,
-        post: Post,
+        post: NormalisedPost,
         exportDir: Path,
         options: ConvertOptions,
     ) {
@@ -160,7 +160,7 @@ object HtmlWriter {
                     .resolve(relative)
 
                 val src = imagePath.toString().replace('\\', '/')
-                writer.write("<img src=\"$src\" alt=\"Post Image\">")
+                writer.write("<img src=\"$src\" alt=\"NormalisedPost Image\">")
                 writer.newLine()
                 writer.newLine()
             }
@@ -169,7 +169,7 @@ object HtmlWriter {
 
     private fun writeVideos(
         writer: BufferedWriter,
-        post: Post,
+        post: NormalisedPost,
         exportDir: Path,
         options: ConvertOptions,
     ) {
@@ -212,7 +212,7 @@ object HtmlWriter {
     }
 
         private fun createOutputFile(
-        post: Post,
+        post: NormalisedPost,
         options: ConvertOptions,
     ): Path {
         // Extract UTC year ("YYYY") and month ("MM") from timestamp

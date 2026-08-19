@@ -1,7 +1,7 @@
 package `in`.sartaj.fb2site.writer
 
 import `in`.sartaj.fb2site.model.ConvertOptions
-import `in`.sartaj.fb2site.model.Post
+import `in`.sartaj.fb2site.model.NormalisedPost
 
 import java.io.BufferedWriter
 import java.nio.file.Files
@@ -18,7 +18,7 @@ object MarkdownWriter {
             .withZone(ZoneOffset.UTC)
 
     fun writePost(
-        post: Post,
+        post: NormalisedPost,
         exportDir: Path,
         options: ConvertOptions,
     ) {
@@ -37,7 +37,7 @@ object MarkdownWriter {
 	
     private fun writePhotos(
     writer: BufferedWriter,
-    post: Post,
+    post: NormalisedPost,
     exportDir: Path,
     options: ConvertOptions,
 ) {
@@ -83,7 +83,7 @@ object MarkdownWriter {
 	
 private fun writeVideos(
     writer: BufferedWriter,
-    post: Post,
+    post: NormalisedPost,
     exportDir: Path,
     options: ConvertOptions,
 ) {
@@ -134,7 +134,7 @@ private fun writeVideos(
 }
 
     private fun createOutputFile(
-    post: Post,
+    post: NormalisedPost,
     options: ConvertOptions,
 ): Path {
 
@@ -164,7 +164,7 @@ private fun writeVideos(
 
     private fun writeFrontMatter(
     writer: BufferedWriter,
-    post: Post,
+    post: NormalisedPost,
     options: ConvertOptions,
 ) {
     writer.write("---")
@@ -209,7 +209,7 @@ private fun writeVideos(
 
 	private fun writeBody(
     writer: BufferedWriter,
-    post: Post,
+    post: NormalisedPost,
 ) {
     if (post.body.isBlank()) {
         return
@@ -221,7 +221,7 @@ private fun writeVideos(
 }
    private fun writeLinks(
     writer: BufferedWriter,
-    post: Post,
+    post: NormalisedPost,
 ) {
     for (link in post.links) {
         writer.write("<$link>")
