@@ -16,22 +16,19 @@ data class NormalisedPost(
     val language: String = "unknown",
     val author: String? = null,
     val facebookUrl: String? = null,
-    val group: String? = null
+    val group: String? = null,
+    val sharedPost: SharedPost? = null
 ) {
-    // Standard ISO-8601 string: e.g. "2026-05-04T03:31:03Z"
     val isoDate: String
         get() = DateTimeFormatter.ISO_INSTANT.format(timestamp)
 
-    // Derived UTC year: e.g. "2026"
     val year: String
         get() = DateTimeFormatter.ofPattern("yyyy")
             .withZone(ZoneOffset.UTC)
             .format(timestamp)
 
-    // Derived UTC month: e.g. "05"
     val month: String
         get() = DateTimeFormatter.ofPattern("MM")
             .withZone(ZoneOffset.UTC)
             .format(timestamp)
 }
-
