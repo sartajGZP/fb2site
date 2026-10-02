@@ -8,14 +8,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
+import java.security.MessageDigest
 
 object MarkdownWriter {
-
-    private val fileFormatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss")
-            .withZone(ZoneOffset.UTC)
 
     fun writePost(
         post: NormalisedPost,
@@ -144,7 +139,7 @@ private fun writeVideos(
     Files.createDirectories(contentDir)
 
     val baseName =
-        fileFormatter.format(post.timestamp)
+        post.id?.takeUnless { it.isBlank() } ?: sha256(post.body)
 
     var outputFile =
         contentDir.resolve("$baseName.md")
@@ -161,6 +156,16 @@ private fun writeVideos(
 
     return outputFile
 }
+
+    private fun sha256(text: String): String {
+        val bytes = MessageDigest
+            .getInstance("SHA-256")
+            .digest(text.toByteArray())
+
+        return bytes.joinToString("") {
+            "%02x".format(it)
+        }
+    }
 
     private fun writeFrontMatter(
     writer: BufferedWriter,

@@ -8,12 +8,12 @@ import `in`.sartaj.fb2site.writer.html.LinksWriter
 import `in`.sartaj.fb2site.writer.html.MediaWriter
 import java.nio.file.Files
 import java.nio.file.Path
+import java.security.MessageDigest
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 object HtmlWriter {
 
-    private val fileFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss").withZone(ZoneOffset.UTC)
     private val yearFormatter = DateTimeFormatter.ofPattern("yyyy").withZone(ZoneOffset.UTC)
     private val monthFormatter = DateTimeFormatter.ofPattern("MM").withZone(ZoneOffset.UTC)
 
@@ -48,7 +48,7 @@ object HtmlWriter {
 
         Files.createDirectories(targetDir)
 
-        val baseName = fileFormatter.format(post.timestamp)
+        val baseName = post.id?.takeUnless { it.isBlank() } ?: sha256(post.body)
         var outputFile = targetDir.resolve("$baseName.html")
         var counter = 2
 
@@ -58,5 +58,15 @@ object HtmlWriter {
         }
 
         return outputFile
+    }
+
+    private fun sha256(text: String): String {
+        val bytes = MessageDigest
+            .getInstance("SHA-256")
+            .digest(text.toByteArray())
+
+        return bytes.joinToString("") {
+            "%02x".format(it)
+        }
     }
 }
